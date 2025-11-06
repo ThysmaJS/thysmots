@@ -6,26 +6,28 @@ export default function GameGrid({
   rows,
   current,
   maxRows,
+  showCurrent = true,
 }: {
   length: number;
   guesses: string[];
   rows: LetterState[][];
   current: string;
   maxRows: number;
+  showCurrent?: boolean;
 }) {
-  const totalRows = Math.max(guesses.length + 1, maxRows);
-  const emptyRows = Math.max(0, totalRows - guesses.length - 1);
+  const totalRows = Math.max(guesses.length + (showCurrent ? 1 : 0), maxRows);
+  const emptyRows = Math.max(0, totalRows - guesses.length - (showCurrent ? 1 : 0));
 
   return (
     <div className="w-full overflow-x-auto">
       <div
-        className="mx-auto grid gap-2"
-        style={{ gridTemplateColumns: `repeat(${length}, minmax(2.5rem, 1fr))`, maxWidth: `calc(${length} * 3rem)` }}
+        className="mx-auto grid gap-3"
+        style={{ gridTemplateColumns: `repeat(${length}, minmax(3.5rem, 1fr))`, maxWidth: `calc(${length} * 4rem)` }}
       >
         {guesses.map((g, i) => (
           <Row key={`g-${i}`} word={g} states={rows[i]} length={length} frozen />
         ))}
-        <Row word={current} length={length} />
+        {showCurrent && <Row word={current} length={length} />}
         {Array.from({ length: emptyRows }).map((_, i) => (
           <Row key={`e-${i}`} word="" length={length} />
         ))}
@@ -41,7 +43,7 @@ function Row({ word, states, length, frozen }: { word: string; states?: LetterSt
       {Array.from({ length }).map((_, idx) => {
         const ch = letters[idx]?.toUpperCase() || '';
         const st = states?.[idx];
-        const base = 'aspect-square select-none rounded-md border text-center text-xl font-semibold leading-[3rem]';
+        const base = 'aspect-square flex items-center justify-center select-none rounded-md border text-center text-2xl font-semibold';
         const theme = st === 'correct'
           ? 'bg-green-500 text-white border-green-600'
           : st === 'present'

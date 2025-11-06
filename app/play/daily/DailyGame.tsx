@@ -5,7 +5,7 @@ import { evaluateGuess, type LetterState } from '@/src/domain/services/evaluate'
 import GameGrid from '@/src/frameworks/drivers/ui/GameGrid';
 import Keyboard from '@/src/frameworks/drivers/ui/Keyboard';
 
-export default function DailyGame({ target }: { target: string }) {
+export default function DailyGame({ target, onEnd }: { target: string; onEnd?: (result: 'win' | 'lose') => void }) {
   const wordLength = useMemo(() => [...target].length, [target]);
   const maxRows = 6;
   const [guesses, setGuesses] = useState<string[]>([]);
@@ -54,17 +54,32 @@ export default function DailyGame({ target }: { target: string }) {
       return;
     }
     const states = evaluateGuess(target.toUpperCase(), current.toUpperCase());
-    setGuesses((g) => [...g, current]);
-    setRows((r) => [...r, states]);
-    setCurrent('');
+
+    const nextGuesses = [...guesses, current];
+    const nextRows = [...rows, states];
+
     if (states.every((s) => s === 'correct')) {
+      setGuesses(nextGuesses);
+      setRows(nextRows);
+      setCurrent('');
       setDone(true);
       showMessage('Bravo !');
+      onEnd?.('win');
     } else if (guesses.length + 1 >= maxRows) {
+      // Défaite: révéler le mot sur une ligne entière en vert
+      const revealStates: LetterState[] = Array(wordLength).fill('correct');
+      setGuesses([...nextGuesses, target]);
+      setRows([...nextRows, revealStates]);
+      setCurrent('');
       setDone(true);
       showMessage(`Perdu ! Mot: ${target.toUpperCase()}`);
+      onEnd?.('lose');
+    } else {
+      setGuesses(nextGuesses);
+      setRows(nextRows);
+      setCurrent('');
     }
-  }, [current, wordLength, target, guesses.length, done]);
+  }, [current, wordLength, target, guesses, rows, done, onEnd]);
 
   // Physical keyboard
   useEffect(() => {
@@ -85,6 +100,7 @@ export default function DailyGame({ target }: { target: string }) {
         rows={rows}
         current={current}
         maxRows={maxRows}
+        showCurrent={!done}
       />
       {message && (
         <div className="text-center text-sm text-red-600 dark:text-red-400">{message}</div>

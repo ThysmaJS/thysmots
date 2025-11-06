@@ -35,10 +35,17 @@ export class FrenchDictionaryGateway implements WordDictionaryGateway {
       const url = new URL(this.wiktionaryApi);
       url.searchParams.set("action", "query");
       url.searchParams.set("format", "json");
+      // origin=* utile côté client, mais on reste côté serveur. On le garde pour compat.
       url.searchParams.set("origin", "*");
       url.searchParams.set("redirects", "1");
       url.searchParams.set("titles", w);
-      const res = await fetch(url.toString(), { cache: 'force-cache' });
+      const res = await fetch(url.toString(), {
+        cache: 'no-store',
+        headers: {
+          // UA explicite recommandé par Wikimedia
+          'User-Agent': 'thysmots/1.0 (https://thysmots.vercel.app)'
+        }
+      });
       if (!res.ok) return false;
       const data = await res.json() as any;
       const pages = data?.query?.pages;
@@ -47,7 +54,15 @@ export class FrenchDictionaryGateway implements WordDictionaryGateway {
         const page = pages[id];
         if (page && !("missing" in page)) return true;
       }
-      return false;
+      // Fallback: HEAD sur la page wiki directe
+      const head = await fetch(`https://fr.wiktionary.org/wiki/${encodeURIComponent(w)}`, {
+        method: 'HEAD',
+        cache: 'no-store',
+        headers: {
+          'User-Agent': 'thysmots/1.0 (https://thysmots.vercel.app)'
+        }
+      });
+      return head.ok;
     } catch {
       return false;
     }

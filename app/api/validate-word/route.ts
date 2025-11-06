@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ValidateWordUseCase } from '@/src/app/use_cases/ValidateWordUseCase';
 import { FrenchDictionaryGateway } from '@/src/adapters/infrastructure';
 
+export const runtime = 'nodejs';
+
 export async function POST(req: NextRequest) {
   try {
     const { word } = await req.json();
@@ -11,7 +13,8 @@ export async function POST(req: NextRequest) {
     const useCase = new ValidateWordUseCase(new FrenchDictionaryGateway());
     const result = await useCase.execute(word);
     return NextResponse.json(result);
-  } catch {
+  } catch (e: any) {
+    console.error('[POST /api/validate-word] error:', e);
     return NextResponse.json({ valid: false, normalized: '' }, { status: 200 });
   }
 }

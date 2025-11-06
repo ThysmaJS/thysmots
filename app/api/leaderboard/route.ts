@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/src/lib/mongodb';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 type Body = { name?: string; score?: unknown };
 
@@ -27,6 +28,7 @@ export async function GET() {
 
     return NextResponse.json({ items }, { status: 200 });
   } catch (e: any) {
+    console.error('[GET /api/leaderboard] error:', e);
     return NextResponse.json({ error: e?.message || 'Failed to load leaderboard' }, { status: 500 });
   }
 }
@@ -45,6 +47,7 @@ export async function POST(request: Request) {
     await db.collection('leaderboard').insertOne({ name, score, createdAt: new Date() });
     return NextResponse.json({ ok: true }, { status: 201 });
   } catch (e: any) {
+    console.error('[POST /api/leaderboard] error:', e);
     return NextResponse.json({ error: e?.message || 'Failed to save score' }, { status: 500 });
   }
 }

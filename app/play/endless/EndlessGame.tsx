@@ -70,7 +70,11 @@ export default function EndlessGame() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, score }),
       });
-      if (!res.ok) throw new Error('Failed to save');
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        console.warn('Leaderboard API save failed:', res.status, data);
+        throw new Error('Failed to save');
+      }
       setLbRefreshKey((k) => k + 1);
       return;
     } catch {}
@@ -82,6 +86,7 @@ export default function EndlessGame() {
       list.push({ name, score, date: new Date().toISOString() });
       localStorage.setItem('endless-leaderboard', JSON.stringify(list));
       setLbRefreshKey((k) => k + 1);
+      console.warn('Saved leaderboard locally (API unavailable).');
     } catch {}
   }, []);
 

@@ -62,7 +62,19 @@ export default function EndlessGame() {
     } catch {}
   }, [wins, games, streak]);
 
-  const addLeaderboardEntry = useCallback((name: string, score: number) => {
+  const addLeaderboardEntry = useCallback(async (name: string, score: number) => {
+    // Try API first
+    try {
+      const res = await fetch('/api/leaderboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, score }),
+      });
+      if (!res.ok) throw new Error('Failed to save');
+      setLbRefreshKey((k) => k + 1);
+      return;
+    } catch {}
+    // Fallback to localStorage if API not available
     try {
       const raw = localStorage.getItem('endless-leaderboard');
       const list: Array<{ name: string; score: number; date: string }>
@@ -88,11 +100,11 @@ export default function EndlessGame() {
     } else {
       const currentStreak = streak;
       // Perdu: afficher le mot (déjà fait dans DailyGame), attendre 2s puis demander le pseudo et réinitialiser
-      resetTimeoutRef.current = window.setTimeout(() => {
+      resetTimeoutRef.current = window.setTimeout(async () => {
         if (currentStreak > 0) {
           const name = window.prompt('Tu as perdu ! Entre ton pseudo pour enregistrer le score (annuler pour ignorer) :');
           if (name && name.trim()) {
-            addLeaderboardEntry(name.trim().slice(0, 24), currentStreak);
+            await addLeaderboardEntry(name.trim().slice(0, 24), currentStreak);
           }
         }
         setStreak(0);

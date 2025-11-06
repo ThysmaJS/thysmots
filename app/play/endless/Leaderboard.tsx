@@ -7,7 +7,18 @@ type Entry = { name: string; score: number; date: string };
 export default function Leaderboard({ refreshKey = 0 }: { refreshKey?: number }) {
   const [entries, setEntries] = useState<Entry[]>([]);
 
-  const load = () => {
+  const load = async () => {
+    // Try API first
+    try {
+      const res = await fetch('/api/leaderboard', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        const items: Entry[] = Array.isArray(data?.items) ? data.items : [];
+        setEntries(items);
+        return;
+      }
+    } catch {}
+    // Fallback to localStorage if API fails
     try {
       const raw = localStorage.getItem('endless-leaderboard');
       const list: Entry[] = raw ? JSON.parse(raw) : [];

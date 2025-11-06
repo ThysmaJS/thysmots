@@ -1,2 +1,6 @@
 // Use cases exports
-// Add your use case exports here
+export { GetDailyWordUseCase } from './GetDailyWordUseCase';
+export type { WordGateway } from './GetDailyWordUseCase';
+export { ValidateWordUseCase } from './ValidateWordUseCase';
+export type { WordDictionaryGateway } from './ValidateWordUseCase';
+export { CompareGuessUseCase } from './CompareGuessUseCase';

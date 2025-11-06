@@ -1,2 +1,3 @@
 // Domain entities exports
-// Add your entity exports here
+export type { LetterState } from './Wordle';
+export { judgeGuess, stripAccents } from './Wordle';

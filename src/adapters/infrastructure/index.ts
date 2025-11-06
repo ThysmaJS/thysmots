@@ -1,2 +1,3 @@
 // Infrastructure exports
-// Add your adapter exports here
+export { TrouveMotGateway } from './TrouveMotGateway';
+export { FrenchDictionaryGateway } from './FrenchDictionaryGateway';

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { GetRandomWordUseCase } from '@/application/use_cases';
-import { TrouveMotGateway } from '@/src/adapters/infrastructure';
+import { TrouveMotGateway } from '@/src/frameworks/drivers/infrastructure';
 
 export const dynamic = 'force-dynamic';
 

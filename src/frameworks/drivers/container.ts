@@ -1,4 +1,4 @@
-import { GetDailyWordUseCase, GetRandomWordUseCase, ValidateWordUseCase, ListLeaderboardUseCase, SubmitScoreUseCase } from '@/application/use_cases';
+import { GetDailyWordUseCase, GetRandomWordUseCase, ValidateWordUseCase, ListLeaderboardUseCase, SubmitScoreUseCase } from '@/app/use_cases';
 import { TrouveMotGateway, FrenchDictionaryGateway, LeaderboardMongoRepository } from '@/src/frameworks/drivers/infrastructure';
 
 // Word use cases

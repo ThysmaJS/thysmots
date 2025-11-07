@@ -8,7 +8,6 @@ Jeu de lettres (style Motus/Wordle) construit avec Next.js et une organisation C
 - Scripts NPM
 - Tests (Jest + RTL)
 - Détails par couche
-- Points d’extension
 
 ---
 
@@ -48,8 +47,6 @@ src/
       ├─ infrastructure/           # Détails techniques (APIs, DB, etc.)
       │  ├─ TrouveMotGateway.ts
       │  ├─ FrenchDictionaryGateway.ts
-      │  ├─ DictionaryApiGateway.ts
-      │  ├─ DicolinkGateway.ts
       │  ├─ LeaderboardMongoRepository.ts
       │  └─ mongodb.ts
       ├─ styles/                   # Styles globaux
@@ -99,7 +96,7 @@ npm test
 ## Tests (Jest + React Testing Library)
 
 Jest est configuré avec:
-- testEnvironment jsdom (tests UI), avec override par fichier si besoin (`/** @jest-environment node */`) pour les handlers serveur.
+- testEnvironment jsdom (tests UI), override possible (`/** @jest-environment node */`) pour les handlers serveur.
 - setupFilesAfterEnv: jest.setup.ts (inclut @testing-library/jest-dom)
 
 Exécuter les tests:
@@ -109,30 +106,28 @@ npm test
 npx jest --watch
 ```
 
-Couverture de tests ajoutée:
+Couverture de tests (toutes vertes au dernier run): 9 suites, 27 tests.
 - Domaine
-  - `src/domain/services/evaluate.spec.ts` — vérifie l’évaluation des lettres (correct/present/absent)
+  - `src/domain/services/evaluate.spec.ts`
 - Cas d’usage
   - `src/app/use_cases/ValidateWordUseCase.spec.ts`
   - `src/app/use_cases/ListLeaderboardUseCase.spec.ts`
   - `src/app/use_cases/SubmitScoreUseCase.spec.ts`
 - Infrastructure
-  - `src/frameworks/drivers/infrastructure/LeaderboardMongoRepository.spec.ts` (mock de `mongodb.ts`)
-  - `src/frameworks/drivers/infrastructure/FrenchDictionaryGateway.spec.ts` (mock de `fetch`)
+  - `src/frameworks/drivers/infrastructure/LeaderboardMongoRepository.spec.ts` (mock `mongodb.ts`)
+  - `src/frameworks/drivers/infrastructure/FrenchDictionaryGateway.spec.ts` (mock `fetch`)
 - HTTP handlers
   - `src/frameworks/drivers/http/leaderboard.spec.ts` (mock du container)
   - `src/frameworks/drivers/http/validateWord.spec.ts` (mock du container)
 - Pages UI
-  - `src/frameworks/drivers/pages/EndlessGame.spec.tsx` (tests de rendu basiques + états erreur)
-
-Toutes les suites sont au vert: 9 suites, 24 tests.
+  - `src/frameworks/drivers/pages/EndlessGame.spec.tsx`
 
 ---
 
 ## Détails par couche
 
-- Domain: logique pure (aucune dépendance vers Next/React/DB). Fournit des ports (interfaces) implémentés par la couche infra.
-- App/use_cases: orchestre les ports du domaine pour exposer des actions applicatives (ex: valider un mot, lister le leaderboard).
-- Frameworks/drivers: détails techniques (handlers Next.js, composants React, accès DB/API, styles). La composition des use cases/adapters se fait dans `container.ts`.
+- Domain: logique pure. Fournit des ports (interfaces) implémentés par la couche infra.
+- App/use_cases: orchestre les ports du domaine pour exposer des actions applicatives.
+- Frameworks/drivers: détails techniques (HTTP Next.js, React, DB/API, styles). Composition dans `container.ts`.
 
 ---

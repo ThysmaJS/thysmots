@@ -4,8 +4,8 @@ import WordGame from "@/src/frameworks/drivers/ui/WordGame";
 export const dynamic = 'force-dynamic';
 
 export default async function DailyPage() {
-  const useCase = makeGetDailyWordUseCase();
-  const word = await useCase.execute();
+  const getter = makeGetDailyWordUseCase();
+  const word = await getter.execute();
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 sm:py-14">

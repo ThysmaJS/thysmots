@@ -1,8 +1,7 @@
 import type { Word } from "@/src/domain/entities/Word";
-import type { WordGateway as DailyWordGateway } from "@/app/use_cases/GetDailyWordUseCase";
-import type { RandomWordGateway } from "@/app/use_cases";
+import type { DailyWordReader, RandomWordReader } from "@/src/domain/ports/words/WordReadPort";
 
-export class TrouveMotGateway implements DailyWordGateway, RandomWordGateway {
+export class TrouveMotGateway implements DailyWordReader, RandomWordReader {
   constructor(private readonly baseUrl: string = "https://trouve-mot.fr/api") {}
 
   async getDailyWord(): Promise<Word> {

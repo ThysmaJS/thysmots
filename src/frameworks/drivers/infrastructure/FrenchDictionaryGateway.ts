@@ -1,19 +1,47 @@
 import type { WordDictionaryGateway } from "@/src/domain/ports/WordDictionaryGateway";
 
 export class FrenchDictionaryGateway implements WordDictionaryGateway {
+  private cache = new Map<string, { valid: boolean; expires: number }>();
+  private ttlMs: number;
+  private useDictApiFallback: boolean;
+
   constructor(
     private readonly dictApiBase: string = "https://api.dictionaryapi.dev/api/v2/entries",
-    private readonly wiktionaryApi: string = "https://fr.wiktionary.org/w/api.php"
-  ) {}
+    private readonly wiktionaryBase: string = "https://fr.wiktionary.org/wiki",
+    opts?: { ttlMs?: number; fallbackDictApi?: boolean }
+  ) {
+    this.ttlMs = opts?.ttlMs ?? 24 * 60 * 60 * 1000; // 24h
+    this.useDictApiFallback = opts?.fallbackDictApi ?? true;
+  }
 
   async isValid(word: string): Promise<boolean> {
     const candidate = (word ?? "").trim().toLocaleLowerCase("fr").normalize("NFC");
     if (!candidate) return false;
-    const dictOk = await this.checkDictionaryApi(candidate);
-    if (dictOk) return true;
-    const wikiOk = await this.checkWiktionary(candidate);
-    return wikiOk;
+
+    const cached = this.cache.get(candidate);
+    const now = Date.now();
+    if (cached && cached.expires > now) return cached.valid;
+
+    // 1) Léger: HEAD sur la page du Wiktionnaire (souvent suffisant et rapide)
+    const wiki = await this.checkWiktionaryHead(candidate);
+    if (wiki !== null) {
+      this.cache.set(candidate, { valid: wiki, expires: now + this.ttlMs });
+      if (wiki === true || !this.useDictApiFallback) return wiki;
+      // sinon on tente un fallback unique ci-dessous
+    }
+
+    // 2) Fallback optionnel: dictionaryapi.dev
+    if (this.useDictApiFallback) {
+      const dictOk = await this.checkDictionaryApi(candidate);
+      this.cache.set(candidate, { valid: dictOk, expires: now + this.ttlMs });
+      return dictOk;
+    }
+
+    // 3) Par défaut, si HEAD a échoué et fallback désactivé
+    this.cache.set(candidate, { valid: false, expires: now + this.ttlMs });
+    return false;
   }
+
   private async checkDictionaryApi(w: string): Promise<boolean> {
     try {
       const res = await fetch(`${this.dictApiBase}/fr/${encodeURIComponent(w)}`, { cache: 'no-store' });
@@ -24,34 +52,19 @@ export class FrenchDictionaryGateway implements WordDictionaryGateway {
       return false;
     }
   }
-  private async checkWiktionary(w: string): Promise<boolean> {
+
+  private async checkWiktionaryHead(w: string): Promise<boolean | null> {
     try {
-      const url = new URL(this.wiktionaryApi);
-      url.searchParams.set("action", "query");
-      url.searchParams.set("format", "json");
-      url.searchParams.set("origin", "*");
-      url.searchParams.set("redirects", "1");
-      url.searchParams.set("titles", w);
-      const res = await fetch(url.toString(), {
-        cache: 'no-store',
-        headers: { 'User-Agent': 'thysmots/1.0 (https://thysmots.vercel.app)' }
-      });
-      if (!res.ok) return false;
-      const data = await res.json() as any;
-      const pages = data?.query?.pages;
-      if (!pages || typeof pages !== 'object') return false;
-      for (const id of Object.keys(pages)) {
-        const page = pages[id];
-        if (page && !("missing" in page)) return true;
-      }
-      const head = await fetch(`https://fr.wiktionary.org/wiki/${encodeURIComponent(w)}`, {
+      // HEAD suit les redirections et est léger
+      const res = await fetch(`${this.wiktionaryBase}/${encodeURIComponent(w)}`, {
         method: 'HEAD',
         cache: 'no-store',
         headers: { 'User-Agent': 'thysmots/1.0 (https://thysmots.vercel.app)' }
       });
-      return head.ok;
+      return res.ok;
     } catch {
-      return false;
+      // null: échec réseau -> laisser la main au fallback éventuel
+      return null;
     }
   }
 }

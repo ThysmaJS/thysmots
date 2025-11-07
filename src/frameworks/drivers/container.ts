@@ -1,13 +1,14 @@
-import { GetDailyWordUseCase, GetRandomWordUseCase, ValidateWordUseCase, ListLeaderboardUseCase, SubmitScoreUseCase } from '@/app/use_cases';
+import { ValidateWordUseCase, ListLeaderboardUseCase, SubmitScoreUseCase } from '@/app/use_cases';
 import { TrouveMotGateway, FrenchDictionaryGateway, LeaderboardMongoRepository } from '@/src/frameworks/drivers/infrastructure';
+import { GetDailyWord, GetRandomWord } from '@/src/domain/ports/words/WordReadPort';
 
-// Word use cases
+// Word use cases (now domain port classes provide execution)
 export function makeGetDailyWordUseCase() {
-  return new GetDailyWordUseCase(new TrouveMotGateway());
+  return new GetDailyWord(new TrouveMotGateway());
 }
 
 export function makeGetRandomWordUseCase() {
-  return new GetRandomWordUseCase(new TrouveMotGateway());
+  return new GetRandomWord(new TrouveMotGateway());
 }
 
 export function makeValidateWordUseCase() {

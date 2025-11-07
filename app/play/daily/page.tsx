@@ -1,6 +1,6 @@
 import { GetDailyWordUseCase } from "@/application/use_cases";
 import { TrouveMotGateway } from "@/src/adapters/infrastructure";
-import WordGame from "@/presentation/ui/WordGame";
+import WordGame from "@/src/frameworks/drivers/ui/WordGame";
 
 export const dynamic = 'force-dynamic';
 

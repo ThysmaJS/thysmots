@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import WordGame from '@/presentation/ui/WordGame';
+import WordGame from '@/src/frameworks/drivers/ui/WordGame';
 import Leaderboard from './Leaderboard';
 
 export default function EndlessGame() {

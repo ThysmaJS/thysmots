@@ -5,7 +5,7 @@ import { evaluateGuess, type LetterState } from '@/src/domain/services/evaluate'
 import GameGrid from '@/src/frameworks/drivers/ui/GameGrid';
 import Keyboard from '@/src/frameworks/drivers/ui/Keyboard';
 
-export default function DailyGame({ target, onEnd }: { target: string; onEnd?: (result: 'win' | 'lose') => void }) {
+export default function WordGame({ target, onEnd }: { target: string; onEnd?: (result: 'win' | 'lose') => void }) {
   const wordLength = useMemo(() => [...target].length, [target]);
   const maxRows = 6;
   const [guesses, setGuesses] = useState<string[]>([]);

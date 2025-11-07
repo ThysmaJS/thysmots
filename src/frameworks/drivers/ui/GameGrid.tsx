@@ -1,5 +1,7 @@
 import type { LetterState } from '@/src/domain/services/evaluate';
 
+// Centralized GameGrid component used by WordGame
+
 export default function GameGrid({
   length,
   guesses,

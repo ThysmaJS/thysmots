@@ -1,5 +1,6 @@
 import { GetDailyWordUseCase } from "@/src/app/use_cases";
 import { TrouveMotGateway } from "@/src/adapters/infrastructure";
+import WordGame from "@/src/frameworks/drivers/ui/WordGame";
 
 export const dynamic = 'force-dynamic';
 
@@ -13,11 +14,8 @@ export default async function DailyPage() {
       <p className="mt-2 text-zinc-600 dark:text-zinc-300">Catégorie : {word.categorie}</p>
 
       <div className="mt-8">
-        {/* Réutilise le composant client DailyGame simple */}
-        <DailyGame target={word.name} />
+        <WordGame target={word.name} />
       </div>
     </div>
   );
 }
-
-import DailyGame from "./DailyGame";

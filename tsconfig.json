@@ -22,6 +22,8 @@
       "@/*": ["./*"],
       "@/src/*": ["./src/*"],
       "@/domain/*": ["./src/domain/*"],
+      "@/application/*": ["./src/application/*"],
+      "@/presentation/*": ["./src/presentation/*"],
       "@/app/*": ["./src/app/*"],
       "@/adapters/*": ["./src/adapters/*"],
       "@/frameworks/*": ["./src/frameworks/*"]

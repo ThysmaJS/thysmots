@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ValidateWordUseCase } from '@/src/app/use_cases/ValidateWordUseCase';
+import { ValidateWordUseCase } from '@/application/use_cases/ValidateWordUseCase';
 import { FrenchDictionaryGateway } from '@/src/adapters/infrastructure';
 
 export const runtime = 'nodejs';

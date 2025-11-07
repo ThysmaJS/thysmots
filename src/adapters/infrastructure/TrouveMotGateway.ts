@@ -1,6 +1,6 @@
 import type { Word } from "@/src/domain/entities/Word";
-import type { WordGateway as DailyWordGateway } from "@/src/app/use_cases/GetDailyWordUseCase";
-import type { RandomWordGateway } from "@/src/app/use_cases";
+import type { WordGateway as DailyWordGateway } from "@/application/use_cases/GetDailyWordUseCase";
+import type { RandomWordGateway } from "@/application/use_cases";
 
 export class TrouveMotGateway implements DailyWordGateway, RandomWordGateway {
   constructor(private readonly baseUrl: string = "https://trouve-mot.fr/api") {}

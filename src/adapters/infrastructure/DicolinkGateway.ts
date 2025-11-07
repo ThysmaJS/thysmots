@@ -1,4 +1,4 @@
-import type { WordDictionaryGateway } from "@/src/app/use_cases/ValidateWordUseCase";
+import type { WordDictionaryGateway } from "@/src/domain/ports/WordDictionaryGateway";
 
 export class DicolinkGateway implements WordDictionaryGateway {
   async isValid(word: string): Promise<boolean> {

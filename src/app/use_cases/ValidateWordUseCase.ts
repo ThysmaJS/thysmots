@@ -1,6 +1,4 @@
-export interface WordDictionaryGateway {
-  isValid(word: string): Promise<boolean>;
-}
+import { WordDictionaryGateway } from '@/src/domain/ports/WordDictionaryGateway';
 
 export class ValidateWordUseCase {
   constructor(private readonly gateway: WordDictionaryGateway) {}

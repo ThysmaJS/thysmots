@@ -1,4 +1,4 @@
-import type { WordDictionaryGateway } from "@/src/app/use_cases/ValidateWordUseCase";
+import type { WordDictionaryGateway } from "@/src/domain/ports/WordDictionaryGateway";
 
 export class FrenchDictionaryGateway implements WordDictionaryGateway {
   constructor(

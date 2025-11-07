@@ -1,5 +1,5 @@
 import { normalizeFrench } from "@/src/domain/valueObjects/Text";
-import type { WordDictionaryGateway } from "@/src/app/use_cases/ValidateWordUseCase";
+import type { WordDictionaryGateway } from "@/src/domain/ports/WordDictionaryGateway";
 
 // Simple validation using Datamuse (supports v=fr for French)
 export class DatamuseDictionaryGateway implements WordDictionaryGateway {

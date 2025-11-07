@@ -1,4 +1,4 @@
-import type { WordDictionaryGateway } from "@/src/app/use_cases/ValidateWordUseCase";
+import type { WordDictionaryGateway } from "@/src/domain/ports/WordDictionaryGateway";
 
 // Utilise https://api.dictionaryapi.dev/api/v2/entries/fr/<word>
 export class DictionaryApiGateway implements WordDictionaryGateway {

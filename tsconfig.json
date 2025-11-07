@@ -24,7 +24,8 @@
       "@/domain/*": ["./src/domain/*"],
       "@/app/*": ["./src/app/*"],
       "@/frameworks/*": ["./src/frameworks/*"]
-    }
+    },
+    "types": ["jest", "node"]
   },
   "include": [
     "next-env.d.ts",

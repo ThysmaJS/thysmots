@@ -92,13 +92,21 @@ export default function EndlessGame() {
   if (error && !target) return (<div className="space-y-3"><p className="text-sm text-red-600 dark:text-red-400">{error}</p><button onClick={fetchNewWord} className="rounded-md bg-zinc-800 px-3 py-1.5 text-sm text-white">Réessayer</button></div>);
   if (!target) return null;
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between text-sm">
-        {category && (<p className="text-zinc-600 dark:text-zinc-300">Catégorie : {category}</p>)}
-        <div className="text-right"><p className="font-medium text-zinc-800 dark:text-zinc-100">Série en cours : {streak}</p></div>
+    <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+      <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">Mode sans fin</h1>
+      {category && (
+        <p className="mt-2 text-zinc-600 dark:text-zinc-300">Catégorie : {category}</p>
+      )}
+      <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Série en cours : <span className="font-medium text-zinc-800 dark:text-zinc-100">{streak}</span></p>
+
+      <div className="mt-8 flex justify-center">
+        <div className="flex flex-col items-center space-y-6 w-full max-w-xl">
+          <WordGame key={target} target={target} onEnd={onEnd} />
+          <div className="w-full max-w-sm">
+            <Leaderboard refreshKey={lbRefreshKey} />
+          </div>
+        </div>
       </div>
-      <WordGame key={target} target={target} onEnd={onEnd} />
-      <div className="pt-2"><Leaderboard refreshKey={lbRefreshKey} /></div>
     </div>
   );
 }
